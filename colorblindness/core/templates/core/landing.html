@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Landing Page</title>
+
+  <!-- Animate.css for nice entry animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <style>
+    /* Reset */ 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Fullscreen video background */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: absolute;
+      top: 100;
+      left: 0;
+      width: 100%;
+      padding: 20px 100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      /* background: rgba(0, 0, 0, 0.25); subtle transparency */
+    }
+
+    /* Logo */
+    .nav-logo {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* Nav buttons */
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px; 
+      margin-right: 10px; 
+    }
+
+    .nav-btn {
+      padding: 10px 25px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      color: white;
+      border: 2px solid #225b9f;
+      background: #225b9f;
+    }
+
+    .nav-btn:hover {
+      background: #225b9f;
+      transform: scale(1.05);
+    }
+
+    /* Outline-style Sign Up button */
+    .nav-btn-outline {
+      background: transparent;
+      /* border: 2px solid #225b9f; */
+      color : #225b9f;
+    }
+
+    .nav-btn-outline:hover {
+      background: #4fa3ff;
+      color: white;
+    }
+
+    /* Center overlay content */
+    .overlay {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #e3f2fd;
+      font-family: 'Poppins', sans-serif;
+      text-shadow: 0 0 10px #4fa3ff;
+    }
+
+    /* Title and text */
+    h1 {
+      font-size: 3rem;
+      letter-spacing: 2px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src=".\media\bg.mp4" type="video/mp4" />
+    Your browser does not support HTML5 video.
+  </video>
+
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="nav-logo"></div>
+    <div class="nav-links">
+      <a href="{% url 'signup' %}" class="nav-btn nav-btn-outline">Sign Up</a>
+      <a href="{% url 'login' %}" class="nav-btn">Login</a>
+    </div>
+  </nav>
+
+  <!-- Centered overlay content -->
+  <!-- <div class="overlay">
+    <h1 class="animate__animated animate__fadeInDown">Welcome to MyApp</h1>
+    <p class="animate__animated animate__fadeInUp animate__delay-1s">
+      Bringing you a fairytale-blue world 🌌
+    </p>
+  </div> -->
+
+</body>
+</html>

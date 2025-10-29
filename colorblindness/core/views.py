@@ -18,6 +18,9 @@ from django.utils.decorators import method_decorator
 from .models import TestQuestion, TestResult
 from django.utils import timezone
 
+def home(request):
+    return render(request, "core/landing.html")
+
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
