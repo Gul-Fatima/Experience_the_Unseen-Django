@@ -1,16 +1,35 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
 from .models import ColorDetection
 
 class SignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Enter a strong password',
+            'class': 'form-control'
+        })
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Confirm your password',
+            'class': 'form-control'
+        })
+    )
 
     class Meta:
         model = User
         fields = ["username", "email", "password"]
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'placeholder': 'Choose a unique username',
+                'class': 'form-control'
+            }),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter your email address',
+                'class': 'form-control'
+            }),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -21,17 +40,32 @@ class SignUpForm(forms.ModelForm):
             raise ValidationError("Passwords do not match!")
         return cleaned_data
 
+
 class ColorDetectorForm(forms.ModelForm):
     class Meta:
         model = ColorDetection
         fields = ['image']
 
+
 class CorrectorForm(forms.Form):
     image = forms.ImageField(required=True)
     CORRECTION_CHOICES = [
-        ('type1', 'Correction Type 1'),
-        ('type2', 'Correction Type 2'),
-        ('type3', 'Correction Type 3'),
+        ('type1', 'Protanopia'),
+        ('type2', ' Deuteranopia'),
+        ('type3', 'Tritanopia'),
     ]
-    correction_type = forms.ChoiceField(choices=CORRECTION_CHOICES, widget=forms.RadioSelect, initial='type1')
-    hue = forms.IntegerField(min_value=-360, max_value=360, initial=0, widget=forms.NumberInput(attrs={'type': 'range', 'min': '-180', 'max': '180'}))
+    correction_type = forms.ChoiceField(
+        choices=CORRECTION_CHOICES,
+        widget=forms.RadioSelect,
+        initial='type1'
+    )
+    hue = forms.IntegerField(
+        min_value=-360,
+        max_value=360,
+        initial=0,
+        widget=forms.NumberInput(attrs={
+            'type': 'range',
+            'min': '-180',
+            'max': '180'
+        })
+    )
