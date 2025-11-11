@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .forms import SignUpForm
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,7 +9,6 @@ import numpy as np
 from .forms import CorrectorForm,ColorDetectorForm
 from django.conf import settings
 import os
-from PIL import Image
 from .models import ColorDetection,Simulation
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -57,7 +55,7 @@ def signup_view(request):
                 login(request, user)
                 return redirect("dashboard")
         else:
-            print("Form errors ❌:", form.errors)  # 🔍 Add this line
+            print("Form errors :", form.errors)  
     else:
         form = SignUpForm()
     return render(request, "core/signup.html", {"form": form})
@@ -147,7 +145,7 @@ def color_detector_view(request):
     hex_value = None
     image_url = None
 
-    # ✅ Handle AJAX click requests (detect color)
+    # Handle AJAX click requests (detect color)
     if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
         x = int(request.POST.get("x"))
         y = int(request.POST.get("y"))
@@ -159,9 +157,10 @@ def color_detector_view(request):
 
         rgb_value = f"({pixel[0]}, {pixel[1]}, {pixel[2]})"
         hex_value = '#%02x%02x%02x' % (pixel[0], pixel[1], pixel[2])
-        detected_color = get_color_name(pixel)
-
-        # ✅ Save result to DB
+        # detected_color = get_color_name(pixel)
+        detected_color = closest_color_name(hex_value)
+        
+        # Save result to DB
         ColorDetection.objects.create(
             user=request.user,
             image=image_rel_path,
@@ -176,7 +175,7 @@ def color_detector_view(request):
             "hex_value": hex_value
         })
 
-    # ✅ Handle image upload
+    # Handle image upload
     elif request.method == "POST":
         form = ColorDetectorForm(request.POST, request.FILES)
         if form.is_valid():
@@ -196,6 +195,22 @@ def color_detector_view(request):
     })
 
 
+import matplotlib.colors as mcolors
+
+def closest_color_name(hex_value):
+    rgb = mcolors.hex2color(hex_value)
+    min_dist = float('inf')
+    closest_color = None
+    for name, hex_code in mcolors.CSS4_COLORS.items():
+        r2, g2, b2 = mcolors.hex2color(hex_code)
+        dist = (r2 - rgb[0])**2 + (g2 - rgb[1])**2 + (b2 - rgb[2])**2
+        if dist < min_dist:
+            min_dist = dist
+            closest_color = name
+    return closest_color
+
+
+    
 def get_color_name(rgb):
     """Approximate name finder for basic colors."""
     color_map = {
@@ -221,10 +236,11 @@ def get_color_name(rgb):
             closest_name = name
 
     return closest_name
+
 @login_required
 def corrector_view(request):
     corrected_image_url = None
-    original_image_url = None  # ✅ initialize this variable
+    original_image_url = None  # initialize this variable
 
     form = CorrectorForm(request.POST or None, request.FILES or None)
 
@@ -254,14 +270,6 @@ def corrector_view(request):
         corrected_filename = f"corrected_{original_filename}"
         corrected_path = os.path.join(transformed_dir, corrected_filename)
         corrected_pil.save(corrected_path)
-
-        # create DB record (optional)
-        # Simulation.objects.create(
-        #     user=request.user,
-        #     original_image=f"originals/{original_filename}",
-        #     transformed_image=f"corrected/{corrected_filename}",
-        #     blindness_type=f"corrector-{correction_type}"
-        # )
 
         corrected_image_url = settings.MEDIA_URL + f"corrected/{corrected_filename}"
         original_image_url = settings.MEDIA_URL + f"originals/{original_filename}"
@@ -460,7 +468,7 @@ def color_test_view(request):
                 "diagnosis": diagnosis,
             })
 
-    # ✅ Calculate progress for progress bar
+    # Calculate progress for progress bar
     progress = (current_q / total_questions) * 100 if total_questions > 0 else 0
 
     return render(request, "core/test.html", {

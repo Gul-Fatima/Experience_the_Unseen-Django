@@ -48,14 +48,11 @@
               </div>
               
               <div class="mt-4 flex justify-between pt-4 border-t border-neutral-100">
-                <button class="text-sm text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1 hover:bg-primary-50 px-3 py-1.5 rounded-lg transition-colors duration-300">
-                  <i class="fas fa-download"></i>
-                  <span>Download</span>
-                </button>
-                <button class="text-sm text-red-600 hover:text-red-800 font-medium flex items-center gap-1 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors duration-300">
-                  <i class="fas fa-trash-alt"></i>
-                  <span>Delete</span>
-                </button>
+                <a href="{{ sim.transformed_image.url }}" download class="text-lg text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1 hover:bg-primary-50 px-3 py-1.5 rounded-lg transition-colors duration-300">
+                  <i class="fas fa-download mr-2"></i>
+                  Download
+                </a>
+                
               </div>
             </div>
           </div>

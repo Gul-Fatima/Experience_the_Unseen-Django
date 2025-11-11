@@ -7,6 +7,12 @@
 
   <!-- Animate.css for nice entry animation -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* Reset */ 
@@ -14,6 +20,11 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
     }
 
     /* Fullscreen video background */
@@ -27,62 +38,85 @@
       z-index: -1;
     }
 
-    /* Navbar */
-    .navbar {
-      position: absolute;
-      top: 100;
+    /* Video overlay for better text readability */
+    .video-overlay {
+      position: fixed;
+      top: 0;
       left: 0;
       width: 100%;
-      padding: 20px 100px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: -1;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: white;
       font-family: 'Poppins', sans-serif;
-      /* background: rgba(0, 0, 0, 0.25); subtle transparency */
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      transition: all 0.3s ease;
     }
 
     /* Logo */
     .nav-logo {
-      font-size: 1.6rem;
-      font-weight: 600;
+      font-size: 1.8rem;
+      font-weight: 700;
       letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-logo i {
+      margin-right: 10px;
+      color: #4fa3ff;
     }
 
     /* Nav buttons */
     .nav-links {
       display: flex;
-      gap: 20px;
-      margin-top: 20px; 
-      margin-right: 10px; 
+      gap: 15px;
     }
 
     .nav-btn {
       padding: 10px 25px;
-      border-radius: 20px;
+      border-radius: 30px;
       text-decoration: none;
       font-weight: 500;
       transition: all 0.3s ease;
       color: white;
       border: 2px solid #225b9f;
       background: #225b9f;
+      display: inline-block;
     }
 
     .nav-btn:hover {
-      background: #225b9f;
-      transform: scale(1.05);
+      background: #4fa3ff;
+      border-color: #4fa3ff;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(79, 163, 255, 0.4);
     }
 
     /* Outline-style Sign Up button */
     .nav-btn-outline {
       background: transparent;
-      /* border: 2px solid #225b9f; */
-      color : #225b9f;
+      border: 2px solid white;
+      color: white;
     }
 
     .nav-btn-outline:hover {
-      background: #4fa3ff;
-      color: white;
+      background: white;
+      color: #225b9f;
+      border-color: white;
     }
 
     /* Center overlay content */
@@ -93,20 +127,164 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      color: #e3f2fd;
+      color: white;
       font-family: 'Poppins', sans-serif;
-      text-shadow: 0 0 10px #4fa3ff;
+      padding: 0 20px;
     }
 
     /* Title and text */
     h1 {
-      font-size: 3rem;
+      font-size: 4rem;
       letter-spacing: 2px;
+      margin-bottom: 20px;
+      font-weight: 700;
     }
 
-    p {
-      font-size: 1.2rem;
-      margin-top: 10px;
+    .subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      max-width: 700px;
+      font-weight: 300;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      padding: 15px 40px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      color: white;
+      background: linear-gradient(45deg, #225b9f, #4fa3ff);
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(79, 163, 255, 0.3);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(79, 163, 255, 0.5);
+    }
+
+    /* Features section */
+    .features {
+      padding: 80px 50px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .features-title {
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+      text-align: center;
+      position: relative;
+    }
+
+    .features-title:after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: #4fa3ff;
+    }
+
+    .features-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      max-width: 1200px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      border-radius: 15px;
+      padding: 30px;
+      width: 300px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: #4fa3ff;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .feature-description {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 30px 50px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: #4fa3ff;
+      transform: translateY(-3px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .subtitle {
+        font-size: 1.2rem;
+      }
+      
+      .features {
+        padding: 60px 20px;
+      }
+      
+      .footer {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+      }
     }
   </style>
 </head>
@@ -118,10 +296,16 @@
     <source src=".\media\bg.mp4" type="video/mp4" />
     Your browser does not support HTML5 video.
   </video>
+  
+  <!-- Video Overlay -->
+  <div class="video-overlay"></div>
 
   <!-- Navigation bar -->
   <nav class="navbar">
-    <div class="nav-logo"></div>
+    <div class="nav-logo">
+      <i class="fas fa-rocket"></i>
+      MyApp
+    </div>
     <div class="nav-links">
       <a href="{% url 'signup' %}" class="nav-btn nav-btn-outline">Sign Up</a>
       <a href="{% url 'login' %}" class="nav-btn">Login</a>
@@ -129,12 +313,64 @@
   </nav>
 
   <!-- Centered overlay content -->
-  <!-- <div class="overlay">
+  <div class="overlay">
     <h1 class="animate__animated animate__fadeInDown">Welcome to MyApp</h1>
-    <p class="animate__animated animate__fadeInUp animate__delay-1s">
-      Bringing you a fairytale-blue world 🌌
+    <p class="subtitle animate__animated animate__fadeInUp animate__delay-1s">
+      Bringing you a fairytale-blue world with endless possibilities
     </p>
-  </div> -->
+    <a href="#" class="cta-button animate__animated animate__fadeInUp animate__delay-2s">
+      Get Started <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2 class="features-title">Amazing Features</h2>
+    <div class="features-container">
+      <div class="feature-card animate__animated animate__fadeInUp">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3 class="feature-title">Lightning Fast</h3>
+        <p class="feature-description">
+          Experience blazing fast performance with our optimized platform.
+        </p>
+      </div>
+      
+      <div class="feature-card animate__animated animate__fadeInUp animate__delay-1s">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="feature-title">Secure & Reliable</h3>
+        <p class="feature-description">
+          Your data is protected with enterprise-grade security measures.
+        </p>
+      </div>
+      
+      <div class="feature-card animate__animated animate__fadeInUp animate__delay-2s">
+        <div class="feature-icon">
+          <i class="fas fa-magic"></i>
+        </div>
+        <h3 class="feature-title">Easy to Use</h3>
+        <p class="feature-description">
+          Intuitive interface designed for users of all skill levels.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="copyright">
+      &copy; 2023 MyApp. All rights reserved.
+    </div>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </footer>
 
 </body>
 </html>
