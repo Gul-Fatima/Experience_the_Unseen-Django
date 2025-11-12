@@ -189,7 +189,6 @@
   const form = document.getElementById('colorCorrectorForm');
   if (form) {
     form.addEventListener('submit', function() {
-      // Create loading indicator if it doesn't exist
       if (!document.getElementById('loadingIndicator')) {
         const loadingDiv = document.createElement('div');
         loadingDiv.id = 'loadingIndicator';

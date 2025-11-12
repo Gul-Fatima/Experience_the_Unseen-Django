@@ -1,8 +1,6 @@
 from django.contrib import admin
-
 from .models import Simulation, ColorDetection, TestQuestion, TestResult
 
-# Register your models here.
 @admin.register(Simulation)
 class SimulationAdmin(admin.ModelAdmin):
     list_display = ("user", "blindness_type", "original_image", "transformed_image", "created_at")

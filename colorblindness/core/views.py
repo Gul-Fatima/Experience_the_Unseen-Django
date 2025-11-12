@@ -221,8 +221,8 @@ def corrector_view(request):
 
     if request.method == "POST" and form.is_valid():
         image_file = form.cleaned_data["image"]
-        correction_type = form.cleaned_data["correction_type"]  # radio: e.g. 'type1','type2','type3'
-        hue = form.cleaned_data["hue"]  # integer slider value (can be negative)
+        correction_type = form.cleaned_data["correction_type"]  
+        hue = form.cleaned_data["hue"]  
 
         # ensure media subfolders
         originals_dir = os.path.join(settings.MEDIA_ROOT, "originals")
@@ -324,6 +324,7 @@ def apply_corrector(pil_image: Image.Image, correction_type: str, hue_adjustment
     corrected = (corrected_flat.reshape(h, w, 3) * 255.0).astype(np.uint8)
     corrected_pil = Image.fromarray(corrected, mode="RGB")
     return corrected_pil
+
 @login_required
 def color_test_view(request):
     questions = TestQuestion.objects.all().order_by("question_number")
