@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from PIL import Image
 import numpy as np
+import matplotlib.colors as mcolors
 from .forms import CorrectorForm,ColorDetectorForm
 from django.conf import settings
 import os
@@ -90,6 +91,10 @@ def simulator_view(request):
 
         # Open image and apply transformation
         image = Image.open(original_path).convert("RGB")
+        # image_array = np.array(image)
+        # print("Image shape:", image_array.shape)
+        # print("Image array:")
+        # print(image_array)
         transformed = apply_color_blindness(image, blindness_type)
 
         # Save transformed image inside /media/transformed/
@@ -194,9 +199,6 @@ def color_detector_view(request):
         "image_url": image_url,
     })
 
-
-import matplotlib.colors as mcolors
-
 def closest_color_name(hex_value):
     rgb = mcolors.hex2color(hex_value)
     min_dist = float('inf')
@@ -209,33 +211,6 @@ def closest_color_name(hex_value):
             closest_color = name
     return closest_color
 
-
-    
-def get_color_name(rgb):
-    """Approximate name finder for basic colors."""
-    color_map = {
-        (255, 0, 0): "Red",
-        (0, 255, 0): "Green",
-        (0, 0, 255): "Blue",
-        (255, 255, 0): "Yellow",
-        (255, 165, 0): "Orange",
-        (128, 0, 128): "Purple",
-        (255, 192, 203): "Pink",
-        (165, 42, 42): "Brown",
-        (0, 0, 0): "Black",
-        (255, 255, 255): "White",
-        (128, 128, 128): "Gray",
-    }
-    closest_name = "Unknown"
-    min_dist = float("inf")
-
-    for rgb_key, name in color_map.items():
-        dist = sum((rgb_key[i] - rgb[i]) ** 2 for i in range(3)) ** 0.5
-        if dist < min_dist:
-            min_dist = dist
-            closest_name = name
-
-    return closest_name
 
 @login_required
 def corrector_view(request):
@@ -280,70 +255,7 @@ def corrector_view(request):
         "original_image_url": original_image_url,
     })
 
-def apply_corrector(pil_image: Image.Image, correction_type: str, hue_adjustment: int) -> Image.Image:
-    import numpy as np
-    from PIL import Image
-
-    arr = np.asarray(pil_image).astype(np.float32) / 255.0
-
-    # --- RGB <-> LMS conversion matrices ---
-    M_rgb2lms = np.array([
-        [0.31399022, 0.63951294, 0.04649755],
-        [0.15537241, 0.75789446, 0.08670142],
-        [0.01775239, 0.10944209, 0.87256922],
-    ], dtype=np.float32)
-
-    M_lms2rgb = np.linalg.inv(M_rgb2lms)
-
-    h, w, _ = arr.shape
-    flat = arr.reshape(-1, 3)
-
-    # Convert to LMS
-    lms = flat @ M_rgb2lms.T
-
-    # Keep original LMS
-    original_lms = lms.copy()
-
-    # --- Apply color-blindness simulation ---
-    # (values from Brettel et al., 1997 model approximations)
-    if correction_type == "type1":  # Protanopia: weak/missing L-cone
-        sim = np.array([
-            [0.0, 2.02344, -2.52581],
-            [0.0, 1.0, 0.0],
-            [0.0, 0.0, 1.0]
-        ], dtype=np.float32)
-    elif correction_type == "type2":  # Deuteranopia: weak/missing M-cone
-        sim = np.array([
-            [1.0, 0.0, 0.0],
-            [0.494207, 0.0, 1.24827],
-            [0.0, 0.0, 1.0]
-        ], dtype=np.float32)
-    elif correction_type == "type3":  # Tritanopia: weak/missing S-cone
-        sim = np.array([
-            [1.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0],
-            [-0.395913, 0.801109, 0.0]
-        ], dtype=np.float32)
-    else:
-        sim = np.eye(3, dtype=np.float32)
-
-    lms = lms @ sim.T
-
-    # --- Optional hue adjustment ---
-    hue_factor = 1.0 + (hue_adjustment / 360.0)
-    lms *= hue_factor
-
-    # --- Blend with original for smoother correction ---
-    lms = np.clip(original_lms * 0.7 + lms * 0.3, 0.0, 1.0)
-
-    # Back to RGB
-    corrected_flat = lms @ M_lms2rgb.T
-    corrected_flat = np.clip(corrected_flat, 0.0, 1.0)
-
-    corrected = (corrected_flat.reshape(h, w, 3) * 255).astype(np.uint8)
-    return Image.fromarray(corrected, mode="RGB")
-
-# # Helper image processing functions (vectorized numpy)
+# Helper image processing functions (vectorized numpy)
 def apply_corrector(pil_image: Image.Image, correction_type: str, hue_adjustment: int) -> Image.Image:
     """
     Convert RGB -> LMS, apply channel scaling + hue adjustment similarly to your C# code,
